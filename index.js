@@ -4,18 +4,12 @@ const consul_module = require('consul')
 const miio = require('miio')
 const express = require('express')
 
+const listen_port = 8080
 
-if (process.argv.length != 4)
-  throw "Usage: node index.js [CONSUL_HOST] [LISTEN_PORT]. \nYou've passed: " + process.argv
-
-const listen_port = Number(process.argv[3])
-
-if (!Number.isInteger(listen_port) || listen_port <= 0 || listen_port > 65535)
-  throw "Incorrect port - expected integer between 1 and 65535, you've passed: " + process.argv[3] + ' which converts to ' + listen_port
-
+if (process.argv.length != 3)
+  throw "Usage: node index.js [CONSUL_HOST]. \nYou've passed: " + process.argv
 
 const consul_host = process.argv[2]
-
 const consul = consul_module( { host: consul_host, promisify: true } )
 
 const server = express()
