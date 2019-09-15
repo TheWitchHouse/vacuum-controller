@@ -1,7 +1,7 @@
 {
   "name": "vacuum-controller",
   "version": "0.0.1",
-  "description": "Vacuum REST controller. Supports Roborock",
+  "description": "Vacuum REST controller. Supports Xiaomi Roborock",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
