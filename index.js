@@ -6,14 +6,16 @@ const express = require('express')
 
 const listen_port = 8080
 
-if (process.argv.length != 4)
-  throw "Usage: node index.js [CONSUL_HOST] [ES_HOST:PORT]. \nYou've passed: " + process.argv
+if (process.argv.length != 5)
+  throw "Usage: node index.js [CONSUL_HOST] [GELF_HOST] [GELF_PORT]. \nYou've passed: " + process.argv
 
 const consul_host = process.argv[2]
 const consul = consul_module( { host: consul_host, promisify: true } )
 
+const gelf_host = process.argv[3]
+const gelf_port = process.argv[4]
 
-var logger = getLogger(process.argv[3])
+var logger = getLogger(gelf_host, gelf_port)
 
 const server = express()
 server.listen(listen_port, function () {
@@ -41,25 +43,26 @@ server.get('/stop', async function (request, response) {
 })
 
 
-function getLogger(es_host) {
-  const es = require('elasticsearch')
+function getLogger(host, port) {
   const winston = require('winston')
-  const winston_es = require('winston-elasticsearch')
+  const winston_gelf = require('winston-gelf')
 
-  var es_client = new es.Client({
-    host: es_host,
-    log: 'info'
-  });
-
-  var esTransportOpts = {
-    level: 'info',
-    index: 'vacuum-controller',
-    client: es_client
-  };
+  const options = {
+    gelfPro: {
+      fields: {
+        source: 'vacuum-controller'
+      },
+      adapterOptions: {
+        host: host,
+        port: port
+      }
+    }
+  }
 
   return winston.createLogger({
     transports: [
-      new winston_es(esTransportOpts)
+      new winston.transports.Console(),
+      new winston_gelf(options)
     ]
   });
 }
