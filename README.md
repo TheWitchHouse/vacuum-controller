@@ -11,4 +11,4 @@ Gets robot token and host from consul.
 
 # usage
 npm install  
-node index.js [CONSUL_HOST] [ES_HOST:PORT]
+node index.js [CONSUL_HOST] [GELF_HOST] [GELF_PORT]
